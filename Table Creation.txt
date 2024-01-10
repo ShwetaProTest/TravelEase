@@ -1,0 +1,145 @@
+CREATE TABLE User (
+    UserID INTEGER PRIMARY KEY,
+    FirstName TEXT,
+    LastName TEXT,
+    Phone TEXT,
+    DOB DATE,
+    Gender TEXT,
+    Email TEXT,
+    AddressID INTEGER,
+    TransportType TEXT
+)
+
+CREATE TABLE Notification (
+    NotificationID INTEGER PRIMARY KEY,
+    UserID INTEGER,
+    Message TEXT,
+    NotificationType TEXT,
+    IsRead INTEGER,
+    Timestamp DATETIME,
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
+)
+
+CREATE TABLE Payment (
+    PaymentID INTEGER PRIMARY KEY,
+    TransactionID INTEGER,
+    PaymentMethod TEXT,
+    Amount REAL,
+    Timestamp DATETIME,
+    FOREIGN KEY (TransactionID) REFERENCES TransactionData(TransactionID)
+)
+
+CREATE TABLE TransactionData (
+    TransactionID INTEGER PRIMARY KEY,
+    UserID INTEGER,
+    PartnerID INTEGER,
+    Amount REAL,
+    LoyaltyPointsEarned INTEGER,
+    TotalLegs INTEGER,
+	TotalConnections INTEGER,
+    Timestamp DATETIME,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (PartnerID) REFERENCES Partner(PartnerID)
+)
+
+CREATE TABLE Partner (
+    PartnerID INTEGER PRIMARY KEY,
+    Name TEXT,
+    Category TEXT
+)
+
+CREATE TABLE Service (
+    ServiceID INTEGER PRIMARY KEY,
+    PartnerID INTEGER,
+    Name TEXT,
+    Available BOOLEAN,
+    FOREIGN KEY (PartnerID) REFERENCES Partner(PartnerID)
+)
+
+CREATE TABLE BookingService (
+    BookingServiceID INTEGER PRIMARY KEY,
+    TransactionID INTEGER,
+    ServiceID INTEGER,
+    Quantity INTEGER,
+    FOREIGN KEY (TransactionID) REFERENCES TransactionData(TransactionID),
+    FOREIGN KEY (ServiceID) REFERENCES Service(ServiceID)
+)
+
+CREATE TABLE Address (
+    AddressID INTEGER PRIMARY KEY,
+    City TEXT,
+    Country TEXT,
+    Pincode TEXT
+)
+
+CREATE TABLE LoyaltyPoints (
+    LoyaltyPointsID INTEGER PRIMARY KEY,
+    PartnerID INTEGER,
+    PointsPerTransaction INTEGER,
+    FOREIGN KEY (PartnerID) REFERENCES Partner(PartnerID)
+)
+
+CREATE TABLE Connection (
+    ConnectionID INTEGER PRIMARY KEY,
+    TransactionID INTEGER,
+    ScheduleID INTEGER,
+    SeatID INTEGER,
+    StatusType TEXT,
+    FOREIGN KEY (TransactionID) REFERENCES TransactionData(TransactionID),
+    FOREIGN KEY (ScheduleID) REFERENCES Schedule(ScheduleID),
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID),
+    FOREIGN KEY (StatusType) REFERENCES Status(StatusType)
+)
+
+CREATE TABLE Status (
+    StatusType TEXT PRIMARY KEY,
+    Description TEXT
+)
+
+CREATE TABLE Seat (
+    SeatID INTEGER PRIMARY KEY,
+    ScheduleID INTEGER,
+    SeatNumber INTEGER,
+    Class TEXT,
+    FOREIGN KEY (ScheduleID) REFERENCES Schedule(ScheduleID)
+)
+
+CREATE TABLE Schedule (
+    ScheduleID INTEGER PRIMARY KEY,
+    PartnerID INTEGER,
+    StartLocation TEXT,
+    DestinationLocation TEXT,
+    Status TEXT,
+    StartTime DATETIME,
+    EndTime DATETIME,
+    TripType TEXT,
+    FOREIGN KEY (PartnerID) REFERENCES Partner(PartnerID),
+    FOREIGN KEY (StartLocation) REFERENCES Address(AddressID),
+    FOREIGN KEY (DestinationLocation) REFERENCES Address(AddressID),
+    FOREIGN KEY (Status) REFERENCES Status(StatusType)
+)
+
+CREATE TABLE ScheduleSeat (
+    ScheduleSeatID INTEGER PRIMARY KEY,
+    SeatID INTEGER,
+    StatusType TEXT,
+    ScheduleID INTEGER,
+    LockUserID INTEGER,
+    LockExpirationTime DATETIME,
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID),
+    FOREIGN KEY (StatusType) REFERENCES Status(StatusType),
+    FOREIGN KEY (ScheduleID) REFERENCES Schedule(ScheduleID),
+    FOREIGN KEY (LockUserID) REFERENCES User(UserID)
+)
+
+CREATE TABLE Leg (
+    LegID INTEGER PRIMARY KEY,
+    TransactionID INTEGER,
+    ScheduleID INTEGER,
+    SeatID INTEGER,
+    StatusType TEXT,
+    FOREIGN KEY (TransactionID) REFERENCES TransactionData(TransactionID),
+    FOREIGN KEY (ScheduleID) REFERENCES Schedule(ScheduleID),
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID),
+    FOREIGN KEY (StatusType) REFERENCES Status(StatusType)
+)

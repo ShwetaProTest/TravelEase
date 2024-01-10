@@ -1,0 +1,31 @@
+Case Study Scenario
+
+Build a web/mobile application that helps travellers book flights and trains. So far, we know the following:
+
+Flights/Trains can be one-way/return
+An airline or a railway network is seen as a partner. To begin with, there are Platinum, Gold, Silver, and Bronze categories of partners
+Users get loyalty points on each transaction and the number of loyalty points varies by the airline/railway partner they book with and the transaction amount
+There is a provision to add extra services with each booking. The following services will be available to start with. Note that not all airline/railway partners and all classes make this service available
+Add extra luggage
+Select premium seat
+Select custom meal
+
+Data Model:
+
+User Table: UserID pk, AddressID fk, FirstName, LastName, Phone, DOB, Gender, Email, AvailableLoyaltyPoints.
+Address Table: AddressID pk, City, Country, Pincode.
+Notification Table: NotificationID pk, UserID fk, Message, NotificationType, Timestamp.
+
+Route Table:RouteID pk, PartnerID fk, StartLocation, DestinationLocation, StartTime, EndTime, Price.
+VehicleType Table: VehicleID pk, PartnerID fk, RouteID fk, NumberOfSeats.
+Seat Table: SeatID pk, VehicleID fk, SeatNumber, Class (Economy, Business, First Class), SeatType.
+Partner Table: PartnerID pk, Name, Category(Platinum, Gold, Silver, Bronze), TransportType(Flight/Train).
+ServiceDetails Table:ServiceDetailsID pk, PartnerID fk, ServiceName, Available.
+LoyaltyPoints : LoyaltyPointsID pk, PartnerID fk, OfferedLoyaltyPoints, Conditions
+
+Transaction Table: TransactionID pk, PaymentID fk, CostID fk, ScheduleDetailsID fk, LoyaltyPointsEarned, Timestamp, PaymentStatus(Pending, Successful, failed), LoyaltyPointsUsed.
+PaymentGateway Table: PaymentID pk, PaymentMethod.
+TripCost Table: CostID pk, RouteID fk, Amount.
+
+Service Table: ServiceID pk, ServiceDetailsID fk, ScheduleDetailsID fk.
+ScheduleDetails Table: ScheduleDetailsID pk, UserID fk, PartnerID fk, RouteID fk, VehicleID fk, SeatID fk, TripType(oneway/Return), LoyaltyPointsGiven.

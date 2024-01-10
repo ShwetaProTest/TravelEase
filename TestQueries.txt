@@ -1,0 +1,33 @@
+--check users and their chosen transport type.
+SELECT UserID, FirstName, LastName, TransportType FROM User; 
+
+--check the schedule and available seats for a particular schedule.
+SELECT s.ScheduleID, s.PartnerID, s.StartLocation, s.DestinationLocation, s.Status, s.StartTime, s.EndTime, s.TripType,
+       se.SeatID, se.SeatNumber, se.Class
+FROM Schedule s
+JOIN Seat se ON s.ScheduleID = se.ScheduleID;  
+
+--check the loyalty points earned by users.
+SELECT t.TransactionID, u.UserID, u.FirstName, u.LastName, t.LoyaltyPointsEarned
+FROM TransactionData t
+JOIN User u ON t.UserID = u.UserID;
+
+--check bookings along with the selected extra services.
+SELECT bs.BookingServiceID, t.TransactionID, bs.ServiceID, bs.Quantity
+FROM BookingService bs
+JOIN TransactionData t ON bs.TransactionID = t.TransactionID;
+
+-- check notifications for users
+SELECT n.NotificationID, n.UserID, n.Message, n.Timestamp
+FROM Notification n
+JOIN User u ON n.UserID = u.UserID;
+
+-- check the locked seats
+SELECT s.ScheduleSeatID, s.SeatID, s.StatusType, s.LockUserID, s.LockExpirationTime
+FROM ScheduleSeat s
+WHERE s.StatusType = 'Locked';
+
+SELECT bs.BookingServiceID, t.TransactionID, s.Name, bs.Quantity
+FROM BookingService bs
+JOIN TransactionData t ON bs.TransactionID = t.TransactionID
+JOIN Service s ON bs.ServiceID = s.ServiceID;
